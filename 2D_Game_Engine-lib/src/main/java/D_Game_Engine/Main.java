@@ -98,8 +98,17 @@ public class Main {
 
 		// Run the rendering loop until the user has attempted to close
 		// the window or has pressed the ESCAPE key.
+		
+		Scene scene = new Scene();
+		
+		TestGameObj obj = new TestGameObj();
+		
+		scene.addGameObject(obj);
+		
 		while ( !glfwWindowShouldClose(window) ) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
+			
+			scene.update();
 
 			glfwSwapBuffers(window); // swap the color buffers
 
@@ -110,6 +119,8 @@ public class Main {
 	}
 
 	public static void main(String[] args) {
+		
+		
 		new Main().run();
 	}
 
