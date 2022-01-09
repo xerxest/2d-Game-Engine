@@ -114,7 +114,7 @@ public class Main {
 
 			// Poll for window events. The key callback above will only be
 			// invoked during this call.
-			glfwPollEvents();
+			glfwPollEvents(); 
 		}
 	}
 
