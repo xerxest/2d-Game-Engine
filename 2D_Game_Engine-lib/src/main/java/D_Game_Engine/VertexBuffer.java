@@ -4,15 +4,11 @@ public class VertexBuffer {
 	
 	private int ID;
 	
-	private float[] data;
-	
 	public VertexBuffer(float data[]){
 		
 		ID = glGenBuffers();
 		
 		glBindBuffer(GL_ARRAY_BUFFER,ID);
-		
-		this.data = data;
 		
 		// potential optimization with GL_STATIC_DRAW 
 		
@@ -20,6 +16,10 @@ public class VertexBuffer {
 		
 	}
 	
+	
+	public void bind() {
+		glBindBuffer(GL_ARRAY_BUFFER,ID);
+	}
 	
 	
 	
