@@ -1,16 +1,59 @@
 package D_Game_Engine;
-
+import static org.lwjgl.opengl.GL33.*;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.IntBuffer;
 import java.util.Scanner;
 
 public class Shader {
 	
-	private int ID;
+	private int ID, vertexID, fragID;
 	
-	public Shader(String fileLocation) {
+	public Shader(String vertexFileLocation, String fragFileLocation) {
 		
+		ID = glCreateProgram();
 		
+		vertexID = compileShader(vertexFileLocation,GL_VERTEX_SHADER);
+		
+		fragID = compileShader(fragFileLocation,GL_FRAGMENT_SHADER);
+		
+		glAttachShader(ID,vertexID);
+		glAttachShader(ID,fragID);
+		glLinkProgram(ID);
+		
+		glValidateProgram(ID);
+		
+		glDeleteProgram(vertexID);
+		glDeleteProgram(fragID);
+		
+	}
+	
+	public void bind() {
+		glUseProgram(ID);
+	}
+	
+	private int compileShader(String src, int shaderType) {
+		
+		int shaderID  = glCreateShader(shaderType);
+		
+		glShaderSource(shaderID,src);
+		
+		glCompileShader(shaderID);
+		
+		// Fix error checking code
+		
+		/*
+		IntBuffer result = null;
+		
+		glGetShaderiv(shaderID,GL_COMPILE_STATUS,result);
+		
+		 if( result.get() == 0) {
+			 System.out.println((glGetShaderInfoLog(shaderID)));
+		 }
+		 
+		 */
+		System.out.println("Shader ERROR"+(glGetShaderInfoLog(shaderID)));
+		return shaderID;
 		
 	}
 	
