@@ -17,7 +17,7 @@ public class Main {
 	// The window handle
 	private long window;
 
-	public void run() {
+	public void run() throws Exception {
 		System.out.println("Hello LWJGL " + Version.getVersion() + "!");
 
 		init();
@@ -85,7 +85,7 @@ public class Main {
 		glfwShowWindow(window);
 	}
 
-	private void loop() {
+	private void loop() throws Exception {
 		// This line is critical for LWJGL's interoperation with GLFW's
 		// OpenGL context, or any context that is managed externally.
 		// LWJGL detects the context that is current in the current thread,
@@ -111,13 +111,16 @@ public class Main {
 		
 		String vertexSrc = "#version 330 core\r\n"
 				+ "layout (location = 0) in vec3 aPos; // the position variable has attribute position 0\r\n"
+				+ "layout (location = 1) in vec2 atexCoors; \n"
 				+ "  \r\n"
 				+ "out vec4 vertexColor; // specify a color output to the fragment shader\r\n"
+				+ "out vec2 texCoors;\n"
 				+ "\r\n"
 				+ "void main()\r\n"
 				+ "{\r\n"
 				+ "    gl_Position = vec4(aPos, 1.0); // see how we directly give a vec3 to vec4's constructor\r\n"
 				+ "    vertexColor = vec4(0.5, 0.0, 0.0, 1.0); // set the output variable to a dark-red color\r\n"
+				+ "		texCoors = atexCoors;\n"
 				+ "}";
 				
 				
@@ -125,10 +128,12 @@ public class Main {
 				+ "out vec4 FragColor;\r\n"
 				+ "  \r\n"
 				+ "in vec4 vertexColor; // the input variable from the vertex shader (same name and same type)  \r\n"
+				+ "in vec2 texCoors; \n"
+				+ "uniform sampler2D myTexture; \n"
 				+ "\r\n"
 				+ "void main()\r\n"
 				+ "{\r\n"
-				+ "    FragColor = vertexColor;\r\n"
+				+ "    FragColor =  texture(myTexture, texCoors);\n"
 				+ "} ";
 		
 		float data[] = {
@@ -137,11 +142,25 @@ public class Main {
 			 0.5f,0.5f,
 			};
 		
+		float texCoords[] = {
+			    0.0f, 0.0f,  // lower-left corner  
+			    1.0f, 0.0f,  // lower-right corner
+			    0.5f, 1.0f   // top-center corner
+			};
+		
+		
+		
 		VertexBuffer vb = new VertexBuffer(data);
 		
-		VertexArray vao = new VertexArray(vb);
+		VertexBuffer tc = new VertexBuffer(texCoords);
+		
+		VertexArray vao = new VertexArray(vb,tc);
+		
+		Texture tex = new Texture("test.png");
 		
 		vao.bind();
+		
+		tex.bind();
 		
 		Shader shader = new Shader(vertexSrc,fragSrc);
 		
@@ -162,7 +181,7 @@ public class Main {
 		}
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		
 		
 		new Main().run();
